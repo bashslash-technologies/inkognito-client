@@ -1,4 +1,4 @@
-import {View, Dimensions} from 'react-native';
+import {View, Dimensions, Image} from 'react-native';
 import {RFValue} from 'react-native-responsive-fontsize';
 import Text from '../../components/text';
 import Button from '../../components/button';
@@ -18,6 +18,10 @@ const EmptyCart = ({navigation}) => {
         alignItems: 'center',
         marginHorizontal: RFValue(20),
       }}>
+      <Image
+        source={require('../../assets/images/empty.png')}
+        style={{width: 200, height: 200}}
+      />
       <Text
         type={'light'}
         style={{fontSize: RFValue(20), marginBottom: RFValue(5)}}>

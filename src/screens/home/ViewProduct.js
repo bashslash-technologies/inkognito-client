@@ -1,99 +1,186 @@
 import React, {Fragment, useContext} from 'react';
-import {Image, View, TouchableOpacity, StyleSheet} from 'react-native';
+import {
+  Image,
+  View,
+  Dimensions,
+  StyleSheet,
+  ScrollView,
+  TouchableHighlight,
+} from 'react-native';
 import Colors from '../../constants/colors';
 import {RFValue} from 'react-native-responsive-fontsize';
 import Text from '../../components/text';
 import Feather from 'react-native-vector-icons/Feather';
 import {CartContext} from '../../context/cart';
+import Button from '../../components/button';
+const {width, height} = Dimensions.get('window');
 
-const ViewProduct = ({navigation, product}) => {
+const ViewProduct = ({
+  navigation,
+  route: {
+    params: {product},
+  },
+}) => {
+  console.log(product);
   const {cart, addItemToCart, removeItemFromCart} = useContext(CartContext);
   return (
     <Fragment>
       <View
         style={{
-          marginHorizontal: 10,
-          marginBottom: 10,
-          padding: 5,
+          flex: 1,
+          backgroundColor: Colors.white,
         }}>
-        <View
-          style={{
-            backgroundColor: Colors.primaryBackground,
-            justifyContent: 'center',
-            alignItems: 'center',
-            borderRadius: 10,
-          }}>
-          <Image
-            source={{uri: product?.images[0]}}
-            resizeMode={'contain'}
-            style={{width: '80%', height: RFValue(150)}}
-          />
-        </View>
-        <View
-          style={{
-            marginTop: RFValue(5),
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}>
-          <View>
-            <Text>{product?.name}</Text>
-            <Text>GHç {product?.price}</Text>
+        <ScrollView style={{paddingHorizontal: 20}}>
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Image
+              source={{uri: product?.images[0]}}
+              resizeMode={'contain'}
+              style={{
+                width: '100%',
+                height: RFValue(height / 5),
+                borderRadius: 20,
+              }}
+            />
           </View>
-          {!cart.find(el => el._id === product?._id) ? (
-            <TouchableOpacity
-              activeOpacity={0.9}
-              onPress={() => addItemToCart(product)}
+          <View style={styles.body}>
+            <ScrollView horizontal>
+              {product?.images.map((img, i) => (
+                <Fragment key={i}>
+                  <Image
+                    source={{uri: img}}
+                    style={{
+                      width: RFValue(60),
+                      height: RFValue(60),
+                      borderRadius: 20,
+                      marginRight: 10,
+                    }}
+                  />
+                </Fragment>
+              ))}
+            </ScrollView>
+            <View
               style={{
-                backgroundColor: Colors.white,
-                borderWidth: 0.5,
-                borderColor: Colors.primaryColor,
-                borderRadius: 10,
                 flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-                paddingVertical: 3,
-                paddingHorizontal: RFValue(30),
+                justifyContent: 'space-between',
+                marginTop: RFValue(10),
               }}>
-              <Feather
-                name={'plus-circle'}
-                size={25}
-                color={Colors.primaryColor}
-              />
-              <Text style={{color: Colors.primaryColor, marginLeft: 5}}>
-                Add to cart
-              </Text>
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity
-              activeOpacity={0.9}
-              onPress={() => removeItemFromCart(product?._id)}
+              <View>
+                <Text type={'semi-bold'}>Name: {product?.name}</Text>
+                <Text type={'semi-bold'}>Stock: {product?.stock} items</Text>
+              </View>
+              <View>
+                <Text style={{color: Colors.primaryColor}}>
+                  Gh&cent; {product?.price}
+                </Text>
+                <Text style={{textDecorationLine: 'line-through'}}>
+                  Gh&cent; {parseFloat(product?.price) + 20}
+                </Text>
+              </View>
+            </View>
+            <View
               style={{
-                backgroundColor: Colors.white,
-                borderWidth: 0.5,
-                borderColor: Colors.primaryColor,
-                borderRadius: 10,
+                marginTop: 10,
                 flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-                paddingVertical: 3,
-                paddingHorizontal: RFValue(30),
+                justifyContent: 'space-between',
               }}>
-              <Feather
-                name={'x-circle'}
-                size={25}
-                color={Colors.primaryColor}
-              />
-              <Text style={{color: Colors.primaryColor, marginLeft: 5}}>
-                Remove from cart
-              </Text>
-            </TouchableOpacity>
-          )}
-        </View>
+              <View>
+                <Text type={'bold'}>Vendor:</Text>
+                <Text>{product?.vendor?.business_name}</Text>
+              </View>
+              <View style={{justifyContent: 'center'}}>
+                <ValueCounter />
+              </View>
+            </View>
+            <View>
+              <Button
+                style={{
+                  backgroundColor: Colors.primaryColor,
+                  borderRadius: 15,
+                  width: '100%',
+                  marginTop: 10,
+                }}
+                onPress={() => alert('hello')}>
+                <View
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: 10,
+                  }}>
+                  <Feather
+                    name={'shopping-cart'}
+                    size={20}
+                    color={Colors.white}
+                  />
+                  <Text
+                    type={'semi-bold'}
+                    style={{
+                      color: Colors.white,
+                      fontSize: RFValue(15),
+                      marginLeft: 10,
+                    }}>
+                    Add To Cart
+                  </Text>
+                </View>
+              </Button>
+            </View>
+            <View style={{marginTop: 20}}>
+              <Text type={'bold'}>Description</Text>
+              <Text>{product?.description}</Text>
+            </View>
+          </View>
+        </ScrollView>
       </View>
     </Fragment>
   );
 };
 
+const ValueCounter = ({}) => {
+  return (
+    <Fragment>
+      <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <TouchableHighlight
+          nderlayColor={Colors.primaryBackground}
+          onPress={() => alert('hello')}
+          style={{
+            marginRight: 10,
+            borderWidth: 1,
+            borderRadius: 10,
+            borderColor: Colors.primaryColor,
+            padding: 5,
+          }}>
+          <Feather name={'minus'} color={Colors.primaryColor} size={20} />
+        </TouchableHighlight>
+        <View style={{marginRight: 10}}>
+          <Text>1</Text>
+        </View>
+        <TouchableHighlight
+          underlayColor={Colors.primaryBackground}
+          onPress={() => alert('hello')}
+          style={{
+            borderWidth: 1,
+            borderRadius: 10,
+            borderColor: Colors.primaryColor,
+            padding: 5,
+          }}>
+          <Feather name={'plus'} color={Colors.primaryColor} size={20} />
+        </TouchableHighlight>
+      </View>
+    </Fragment>
+  );
+};
+
+ViewProduct.navigationOptions = {
+  title: 'Hello',
+};
+
 export default ViewProduct;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  body: {},
+});

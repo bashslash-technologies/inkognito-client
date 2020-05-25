@@ -34,7 +34,7 @@ const ProfileComponent = props => {
             <Text style={{fontSize: RFValue(20)}}>
               {data?.userToken?.user?.name}
             </Text>
-            <Text style={{fontSize: RFValue(10)}}>
+            <Text style={{fontSize: RFValue(12), textAlign: 'center'}}>
               JOINED {moment(data?.userToken?.user?.createdAt).format('MMMM')}
             </Text>
           </View>
