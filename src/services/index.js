@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-community/async-storage';
 
-export const BASE_URL = 'http://192.168.8.100s:5000';
-// export const BASE_URL = 'https://inkognito-server.herokuapp.com';
+// export const BASE_URL = 'http://192.168.8.100:5000';
+export const BASE_URL = 'https://inkognito-server.herokuapp.com';
 
 class Store {
   async storeToken(key, data) {
