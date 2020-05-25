@@ -5,6 +5,7 @@ const Stack = createStackNavigator();
 import HomeComponent from '../screens/home';
 import ViewProduct from '../screens/home/ViewProduct';
 import Colors from '../constants/colors';
+import AllProductsComponent from '../screens/home/allProducts';
 
 const HomeStack = props => {
   return (
@@ -20,11 +21,23 @@ const HomeStack = props => {
           component={HomeComponent}
         />
         <Stack.Screen
-          name="ViewProduct"
+          name={'AllProducts'}
           options={{
+            title: 'Products',
             headerStyle: {backgroundColor: Colors.primaryColor},
             headerTitleStyle: {color: Colors.white},
+            headerBackTitleStyle: {color: Colors.white},
           }}
+          component={AllProductsComponent}
+        />
+        <Stack.Screen
+          name="SingleProduct"
+          options={({route}) => ({
+            title: route.params?.product?.name,
+            headerStyle: {backgroundColor: Colors.primaryColor},
+            headerTitleStyle: {color: Colors.white},
+            headerBackTitleStyle: {color: Colors.white},
+          })}
           component={ViewProduct}
         />
       </Stack.Navigator>

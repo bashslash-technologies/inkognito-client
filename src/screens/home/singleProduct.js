@@ -11,7 +11,7 @@ const SingleProduct = ({product, navigation}) => {
   return (
     <TouchableOpacity
       onPress={() =>
-        navigation.navigate('ViewProduct', {
+        navigation.push('SingleProduct', {
           product,
         })
       }
@@ -24,7 +24,6 @@ const SingleProduct = ({product, navigation}) => {
         }}>
         <View
           style={{
-            backgroundColor: Colors.primaryBackground,
             justifyContent: 'center',
             alignItems: 'center',
             borderRadius: 10,
@@ -32,7 +31,7 @@ const SingleProduct = ({product, navigation}) => {
           <Image
             source={{uri: product?.images[0]}}
             resizeMode={'contain'}
-            style={{width: '80%', height: RFValue(150)}}
+            style={{width: '100%', height: RFValue(150)}}
           />
         </View>
         <View

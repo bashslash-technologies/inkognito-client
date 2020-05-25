@@ -1,4 +1,4 @@
-import {View} from 'react-native';
+import {View, TouchableOpacity} from 'react-native';
 import {RFValue} from 'react-native-responsive-fontsize';
 import Colors from '../../constants/colors';
 import Feather from 'react-native-vector-icons/Feather';
@@ -33,7 +33,7 @@ const HeaderComponent = ({icon, title, goTo}) => {
           {title}
         </Text>
       </View>
-      <View>
+      <TouchableOpacity onPress={goTo}>
         <View
           style={{
             flex: 1,
@@ -49,7 +49,7 @@ const HeaderComponent = ({icon, title, goTo}) => {
             color={Colors.primaryColor}
           />
         </View>
-      </View>
+      </TouchableOpacity>
     </View>
   );
 };

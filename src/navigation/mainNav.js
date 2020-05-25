@@ -40,13 +40,6 @@ function MyTabBar({state, descriptors, navigation}) {
         }}>
         {state.routes.map((route, index) => {
           const {options} = descriptors[route.key];
-          const label =
-            options.tabBarLabel !== undefined
-              ? options.tabBarLabel
-              : options.title !== undefined
-              ? options.title
-              : route.name;
-
           const isFocused = state.index === index;
 
           const onPress = () => {
@@ -80,23 +73,25 @@ function MyTabBar({state, descriptors, navigation}) {
                   onPress={onPress}
                   onLongPress={onLongPress}>
                   <View>
-                    {index === 1 && cart.length ? (
+                    {index === 1 && (
                       <View
                         style={{
                           backgroundColor: Colors.primaryColor,
                           position: 'absolute',
                           right: -10,
                           top: -10,
-                          padding: 3,
+                          padding: 5,
+                          width: 25,
                           borderRadius: 50,
                           zIndex: 1,
+                          alignItems: 'center',
                         }}>
                         <Text
-                          style={{color: Colors.white, fontSize: RFValue(15)}}>
+                          style={{color: Colors.white, fontSize: RFValue(12)}}>
                           {cart.length}
                         </Text>
                       </View>
-                    ) : null}
+                    )}
                     <options.tabBarIcon
                       color={isFocused ? Colors.primaryColor : '#6e6e6e'}
                     />

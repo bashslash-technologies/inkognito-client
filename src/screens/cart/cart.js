@@ -13,52 +13,50 @@ const CartComponent = ({navigation}) => {
   return (
     <Fragment>
       <View style={{backgroundColor: Colors.white, flex: 1}}>
-        {/*<EmptyCart navigation={navigation} for empty cart />*/}
         {cart.length ? (
-          <View
-            style={{
-              flexDirection: 'row',
-              padding: RFValue(10),
-              marginBottom: RFValue(5),
-              alignItems: 'center',
-            }}>
-            <View style={{flex: 1.5}}>
-              <View
-                style={{
-                  backgroundColor: Colors.primaryBackground,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-
-                  width: RFValue(40),
-                  height: RFValue(35),
-                  borderRadius: 10,
-                }}>
-                <Feather
-                  name={'shopping-cart'}
-                  size={25}
-                  color={Colors.primaryColor}
-                />
+          <Fragment>
+            <View
+              style={{
+                flexDirection: 'row',
+                padding: RFValue(10),
+                marginBottom: RFValue(5),
+                alignItems: 'center',
+              }}>
+              <View style={{flex: 1.5}}>
+                <View
+                  style={{
+                    backgroundColor: Colors.primaryBackground,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    width: RFValue(40),
+                    height: RFValue(35),
+                    borderRadius: 10,
+                  }}>
+                  <Feather
+                    name={'shopping-cart'}
+                    size={25}
+                    color={Colors.primaryColor}
+                  />
+                </View>
+              </View>
+              <View style={{flex: 6}}>
+                <Text type={'medium'} style={{fontSize: RFValue(15)}}>
+                  In your cart
+                </Text>
+              </View>
+              <View style={{flex: 1}}>
+                <Text>{cart.length}</Text>
               </View>
             </View>
-            <View style={{flex: 6}}>
-              <Text type={'medium'} style={{fontSize: RFValue(15)}}>
-                In your cart
-              </Text>
-            </View>
-            <View style={{flex: 1}}>
-              <Text>{cart.length}</Text>
-            </View>
-          </View>
-        ) : null}
-        <ScrollView>
-          {cart.map((cartItem, key) => (
-            <SingleCart key={key} cartItem={cartItem} />
-          ))}
-          {!cart.length && <EmptyCart navigation={navigation} />}
-          {/* <SingleCart />
-          <SingleCart />
-          <SingleCart /> */}
-        </ScrollView>
+            <ScrollView>
+              {cart.map((cartItem, key) => (
+                <SingleCart key={key} cartItem={cartItem} />
+              ))}
+            </ScrollView>
+          </Fragment>
+        ) : (
+          <EmptyCart navigation={navigation} />
+        )}
       </View>
     </Fragment>
   );

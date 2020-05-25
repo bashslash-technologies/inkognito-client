@@ -1,5 +1,11 @@
 import React, {Fragment, useState, useEffect} from 'react';
-import {View, Image, ScrollView, TouchableOpacity, Modal} from 'react-native';
+import {
+  View,
+  ActivityIndicator,
+  ScrollView,
+  TouchableOpacity,
+  Modal,
+} from 'react-native';
 import Text from '../../components/text';
 import Colors from '../../constants/colors';
 import {RFValue} from 'react-native-responsive-fontsize';
@@ -17,14 +23,22 @@ const HomeComponent = ({navigation}) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    get('/products/all')
+    setLoading(true);
+    get('/products/all?page=0&size=5')
       .then(res => {
-        console.log(res.data.payload[0]);
+        console.log(res.data);
+        if (!res.data.success) {
+          return showMessage({
+            message: 'Error',
+            description: res.data.message,
+            type: 'danger',
+          });
+        }
         setData(res.data.payload);
         setLoading(false);
       })
       .catch(e => {
-        console.log(e);
+        setLoading(false);
         showMessage({
           message: 'Error',
           description: 'Oops, Something Happened',
@@ -43,7 +57,10 @@ const HomeComponent = ({navigation}) => {
         </TouchableOpacity>
 
         <ScrollView>
-          <HeaderComponent icon={'grid'} title={'Categories'} />
+          <HeaderComponent
+            icon={'grid'}
+            title={'Categories'}
+          />
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -53,24 +70,25 @@ const HomeComponent = ({navigation}) => {
             <CategoryComponent name={'Drugs'} icon={'coffee'} />
             <CategoryComponent name={'Accessories'} icon={'airplay'} />
           </ScrollView>
-          {/*<HeaderComponent icon={'home'} title={'Shops'} />*/}
-          {/*<ScrollView*/}
-          {/*  horizontal*/}
-          {/*  showsHorizontalScrollIndicator={false}*/}
-          {/*  style={{paddingHorizontal: RFValue(10)}}>*/}
-          {/*  <ShopComponent />*/}
-          {/*  <ShopComponent />*/}
-          {/*  <ShopComponent />*/}
-          {/*  <ShopComponent />*/}
-          {/*</ScrollView>*/}
-          <HeaderComponent icon={'gift'} title={'Products'} />
-          {data.map((product, key) => (
-            <SingleProduct
-              key={key}
-              product={product}
-              navigation={navigation}
-            />
-          ))}
+          <HeaderComponent icon={'gift'} title={'Products'} goTo={()=>navigation.push('AllProducts')} />
+          {loading ? (
+            <Fragment>
+              <View style={{marginTop: RFValue(50)}}>
+                <ActivityIndicator />
+              </View>
+            </Fragment>
+          ) : (
+            <Fragment>
+              {data.map((product, key) => (
+                <SingleProduct
+                  key={key}
+                  c
+                  product={product}
+                  navigation={navigation}
+                />
+              ))}
+            </Fragment>
+          )}
         </ScrollView>
       </View>
       <Modal visible={show} animationType={'fade'}>
