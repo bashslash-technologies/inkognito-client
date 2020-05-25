@@ -12,7 +12,7 @@ export default ({children}) => {
 
   const removeItemFromCart = item_id => {
     const items = [...cart.filter(el => el._id !== item_id)];
-    setCart(items)
+    setCart(items);
   };
 
   return (
