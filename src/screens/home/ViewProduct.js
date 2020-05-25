@@ -1,21 +1,15 @@
 import React, {Fragment, useContext} from 'react';
-import {Image, View, TouchableOpacity} from 'react-native';
+import {Image, View, TouchableOpacity, StyleSheet} from 'react-native';
 import Colors from '../../constants/colors';
 import {RFValue} from 'react-native-responsive-fontsize';
 import Text from '../../components/text';
 import Feather from 'react-native-vector-icons/Feather';
 import {CartContext} from '../../context/cart';
 
-const SingleProduct = ({product, navigation}) => {
+const ViewProduct = ({navigation, product}) => {
   const {cart, addItemToCart, removeItemFromCart} = useContext(CartContext);
   return (
-    <TouchableOpacity
-      onPress={() =>
-        navigation.navigate('ViewProduct', {
-          product,
-        })
-      }
-      activeOpacity={0.9}>
+    <Fragment>
       <View
         style={{
           marginHorizontal: 10,
@@ -45,7 +39,7 @@ const SingleProduct = ({product, navigation}) => {
             <Text>{product?.name}</Text>
             <Text>GHç {product?.price}</Text>
           </View>
-          {!cart.find(el => el._id === product._id) ? (
+          {!cart.find(el => el._id === product?._id) ? (
             <TouchableOpacity
               activeOpacity={0.9}
               onPress={() => addItemToCart(product)}
@@ -96,7 +90,10 @@ const SingleProduct = ({product, navigation}) => {
           )}
         </View>
       </View>
-    </TouchableOpacity>
+    </Fragment>
   );
 };
-export default SingleProduct;
+
+export default ViewProduct;
+
+const styles = StyleSheet.create({});

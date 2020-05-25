@@ -1,4 +1,4 @@
-import React, {Fragment, memo} from 'react';
+import React, {Fragment, memo, useContext} from 'react';
 import {View, Text, TouchableOpacity, SafeAreaView} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 const Tabs = createBottomTabNavigator();
@@ -9,8 +9,12 @@ import HomeStack from './homeStack';
 import CartStack from './cartStack';
 import ProfileStack from './profileStack';
 import SettingseStack from './settingsStack';
+import {CartContext} from '../context/cart';
 
 function MyTabBar({state, descriptors, navigation}) {
+  //bring in the CartContext so that we can display the figure in the badge
+  const {cart} = useContext(CartContext);
+
   return (
     <View style={{width: '100%', position: 'relative'}}>
       <View
@@ -76,7 +80,7 @@ function MyTabBar({state, descriptors, navigation}) {
                   onPress={onPress}
                   onLongPress={onLongPress}>
                   <View>
-                    {index === 1 && (
+                    {index === 1 && cart.length ? (
                       <View
                         style={{
                           backgroundColor: Colors.primaryColor,
@@ -89,10 +93,10 @@ function MyTabBar({state, descriptors, navigation}) {
                         }}>
                         <Text
                           style={{color: Colors.white, fontSize: RFValue(15)}}>
-                          10
+                          {cart.length}
                         </Text>
                       </View>
-                    )}
+                    ) : null}
                     <options.tabBarIcon
                       color={isFocused ? Colors.primaryColor : '#6e6e6e'}
                     />

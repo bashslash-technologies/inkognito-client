@@ -1,15 +1,19 @@
-import {View} from 'react-native';
+import {View, Dimensions} from 'react-native';
 import {RFValue} from 'react-native-responsive-fontsize';
 import Text from '../../components/text';
 import Button from '../../components/button';
 import Colors from '../../constants/colors';
 import React from 'react';
 
+const {height} = Dimensions.get('screen');
+
 const EmptyCart = ({navigation}) => {
   return (
     <View
       style={{
+        height,
         flex: 1,
+        display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         marginHorizontal: RFValue(20),

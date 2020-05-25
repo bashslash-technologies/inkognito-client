@@ -12,16 +12,19 @@ import SearchModalComponent from './modal';
 import {get} from '../../services/transport';
 import {showMessage} from 'react-native-flash-message';
 
-const HomeComponent = props => {
+const HomeComponent = ({navigation}) => {
   const [show, setShow] = useState(false);
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     get('/products/all')
-      .then(data => {
-        console.log(data);
+      .then(res => {
+        console.log(res.data.payload[0]);
+        setData(res.data.payload);
+        setLoading(false);
       })
       .catch(e => {
+        console.log(e);
         showMessage({
           message: 'Error',
           description: 'Oops, Something Happened',
@@ -61,10 +64,13 @@ const HomeComponent = props => {
           {/*  <ShopComponent />*/}
           {/*</ScrollView>*/}
           <HeaderComponent icon={'gift'} title={'Products'} />
-          <SingleProduct />
-          <SingleProduct />
-          <SingleProduct />
-          <SingleProduct />
+          {data.map((product, key) => (
+            <SingleProduct
+              key={key}
+              product={product}
+              navigation={navigation}
+            />
+          ))}
         </ScrollView>
       </View>
       <Modal visible={show} animationType={'fade'}>

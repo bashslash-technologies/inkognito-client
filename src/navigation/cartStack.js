@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react';
+import React, {Fragment, useContext} from 'react';
 import {StatusBar} from 'react-native';
 import {createStackNavigator} from '@react-navigation/stack';
 const Stack = createStackNavigator();
@@ -7,8 +7,10 @@ import Colors from '../constants/colors';
 import Feather from 'react-native-vector-icons/Feather';
 import {RFValue} from 'react-native-responsive-fontsize';
 import ButtonComponent from '../components/button';
+import {CartContext} from '../context/cart';
 
 const CartStack = props => {
+  const {cart} = useContext(CartContext);
   return (
     <Fragment>
       <StatusBar barStyle={'light-content'} />
@@ -21,9 +23,11 @@ const CartStack = props => {
             headerRight: ({navigation}) => {
               return (
                 <Fragment>
-                  <ButtonComponent onPress={() => alert('hello')}>
-                    <Feather name={'check'} size={27} color={Colors.white} />
-                  </ButtonComponent>
+                  {cart.length ? (
+                    <ButtonComponent onPress={() => alert('hello')}>
+                      <Feather name={'check'} size={27} color={Colors.white} />
+                    </ButtonComponent>
+                  ) : null}
                 </Fragment>
               );
             },

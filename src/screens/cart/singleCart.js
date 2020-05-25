@@ -1,11 +1,13 @@
-import React, {Fragment} from 'react';
-import {TouchableHighlight, View} from 'react-native';
+import React, {Fragment, useContext} from 'react';
+import {TouchableOpacity, View} from 'react-native';
 import {RFValue} from 'react-native-responsive-fontsize';
 import Colors from '../../constants/colors';
 import Feather from 'react-native-vector-icons/Feather';
 import Text from '../../components/text';
+import {CartContext} from '../../context/cart';
 
-const SingleCart = ({}) => {
+const SingleCart = ({cartItem}) => {
+  const {removeItemFromCart} = useContext(CartContext);
   return (
     <Fragment>
       <View
@@ -45,9 +47,9 @@ const SingleCart = ({}) => {
             <Text
               type={'semi-bold'}
               style={{flexWrap: 'wrap', width: RFValue(170)}}>
-              Oat Meal lorem svsiv sdyvsdiukbvsu
+              {cartItem?.name}
             </Text>
-            <Text>GHç 180.0</Text>
+            <Text>GHç {cartItem?.price}</Text>
           </View>
           <View
             style={{
@@ -55,8 +57,9 @@ const SingleCart = ({}) => {
               justifyContent: 'space-between',
               alignItems: 'center',
             }}>
-            <Text>by whatever tehnologies</Text>
-            <View
+            <Text>by {cartItem?.vendor.business_name}</Text>
+            <TouchableOpacity
+              onPress={() => removeItemFromCart(cartItem._id)}
               style={{
                 backgroundColor: Colors.danger,
                 borderWidth: 0.5,
@@ -69,7 +72,7 @@ const SingleCart = ({}) => {
               }}>
               <Feather name={'x-circle'} size={25} color={Colors.white} />
               <Text style={{color: '#fff', marginLeft: 5}}>Remove</Text>
-            </View>
+            </TouchableOpacity>
           </View>
         </View>
       </View>
