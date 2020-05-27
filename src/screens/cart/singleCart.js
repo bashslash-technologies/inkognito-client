@@ -4,9 +4,9 @@ import {RFValue} from 'react-native-responsive-fontsize';
 import Colors from '../../constants/colors';
 import Feather from 'react-native-vector-icons/Feather';
 import Text from '../../components/text';
-import {CartContext} from '../../context/cart';
+import cart, {CartContext} from '../../context/cart';
 
-const SingleCart = ({cartItem}) => {
+const SingleCart = ({cartItem, showRemove}) => {
   const {removeItemFromCart} = useContext(CartContext);
   return (
     <Fragment>
@@ -58,21 +58,36 @@ const SingleCart = ({cartItem}) => {
               alignItems: 'center',
             }}>
             <Text>by {cartItem?.vendor.business_name}</Text>
-            <TouchableOpacity
-              onPress={() => removeItemFromCart(cartItem._id)}
-              style={{
-                backgroundColor: Colors.danger,
-                borderWidth: 0.5,
-                borderColor: Colors.danger,
-                borderRadius: 10,
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-                padding: 3,
-              }}>
-              <Feather name={'x-circle'} size={25} color={Colors.white} />
-              <Text style={{color: '#fff', marginLeft: 5}}>Remove</Text>
-            </TouchableOpacity>
+            {!showRemove ? (
+              <TouchableOpacity
+                onPress={() => removeItemFromCart(cartItem._id)}
+                style={{
+                  backgroundColor: Colors.danger,
+                  borderWidth: 0.5,
+                  borderColor: Colors.danger,
+                  borderRadius: 10,
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  padding: 3,
+                }}>
+                <Feather name={'x-circle'} size={25} color={Colors.white} />
+                <Text style={{color: '#fff', marginLeft: 5}}>Remove</Text>
+              </TouchableOpacity>
+            ) : (
+              <View
+                style={{
+                  height: 20,
+                  width: 20,
+                  borderRadius: 20 / 2,
+                  backgroundColor: Colors.primaryColor,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Text style={{color: '#fff'}}>{cartItem.qty}</Text>
+              </View>
+            )}
           </View>
         </View>
       </View>

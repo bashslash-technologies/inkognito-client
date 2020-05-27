@@ -4,18 +4,18 @@ import {
   ActivityIndicator,
   FlatList,
   RefreshControl,
-  TouchableOpacity,
-  Modal,
+  // TouchableOpacity,
+  // Modal,
 } from 'react-native';
-import Text from '../../components/text';
+// import Text from '../../components/text';
 import Colors from '../../constants/colors';
-import {RFValue} from 'react-native-responsive-fontsize';
-import Feather from 'react-native-vector-icons/Feather';
+// import {RFValue} from 'react-native-responsive-fontsize';
+// import Feather from 'react-native-vector-icons/Feather';
 import SingleProduct from './singleProduct';
-import HeaderComponent from './header';
-import CategoryComponent from './category';
-import styled from 'styled-components/native';
-import SearchModalComponent from './modal';
+// import HeaderComponent from './header';
+// import CategoryComponent from './category';
+// import styled from 'styled-components/native';
+// import SearchModalComponent from './modal';
 import {get} from '../../services/transport';
 import {showMessage} from 'react-native-flash-message';
 
@@ -28,7 +28,7 @@ const AllProductsComponent = ({navigation}) => {
   const [size] = useState(2);
 
   const fetchData = () => {
-    get(`/products/all?page=${page}&size=${size}`)
+    get('/products/all')
       .then(res => {
         if (!res.data.success) {
           return showMessage({
@@ -56,23 +56,23 @@ const AllProductsComponent = ({navigation}) => {
     setRefreshing(true);
     fetchData();
   };
-  const loadMore = () => {
-    setPage(parseInt(page) + 1);
-    setLoadMore(true);
-    fetchData();
-  };
-  const renderFooter = () => {
-    if (!loadingMore) return null;
+  // const loadMore = () => {
+  //   setPage(parseInt(page) + 1);
+  //   setLoadMore(true);
+  //   fetchData();
+  // };
+  // const renderFooter = () => {
+  //   if (!loadingMore) return null;
 
-    return (
-      <View
-        style={{
-          marginTop: 20,
-        }}>
-        <ActivityIndicator animating size={2} />
-      </View>
-    );
-  };
+  //   return (
+  //     <View
+  //       style={{
+  //         marginTop: 20,
+  //       }}>
+  //       <ActivityIndicator animating size={2} />
+  //     </View>
+  //   );
+  // };
 
   useEffect(() => {
     setLoading(true);

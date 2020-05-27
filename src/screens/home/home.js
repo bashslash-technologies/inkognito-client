@@ -24,7 +24,7 @@ const HomeComponent = ({navigation}) => {
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     setLoading(true);
-    get('/products/all?page=0&size=5')
+    get('/products/all')
       .then(res => {
         console.log(res.data);
         if (!res.data.success) {
