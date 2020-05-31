@@ -6,11 +6,13 @@ import {
   StyleSheet,
   Modal,
   TouchableOpacity,
+  Dimensions,
 } from 'react-native';
 import {CartContext} from '../../context/cart';
 import SingleCart from './singleCart';
 import colors from '../../constants/colors';
 import Feather from 'react-native-vector-icons/Feather';
+import LocationView from 'react-native-location-view';
 
 const deliveryOptions = [
   {
@@ -33,12 +35,22 @@ const deliveryOptions = [
   },
 ];
 
+const {height} = Dimensions.get('window');
+
 const InvoicePage = () => {
   const {cart} = useContext(CartContext);
   const [showDeliveryOptions, setShowDeliveryOptions] = useState(false);
-  const [deliveryChoices, setDeliveryChoices] = useState(deliveryOptions);
+  const [showPickLocationModal, setShowPickLocationModal] = useState(false);
+  const [deliveryChoices] = useState(deliveryOptions);
   const [delivery, setDelivery] = useState(null);
   const [location, setLocation] = useState(null);
+
+  const handleLocationSelected = location => {
+    console.log(location);
+    setLocation(location);
+    setShowPickLocationModal(!showPickLocationModal);
+  };
+
   return (
     <View style={styles.full}>
       <ScrollView>
@@ -48,6 +60,10 @@ const InvoicePage = () => {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Delivery</Text>
+            <TouchableOpacity
+              onPress={() => setShowDeliveryOptions(!showDeliveryOptions)}>
+              <Text>change</Text>
+            </TouchableOpacity>
           </View>
           <View style={styles.sectionBody}>
             {!delivery ? (
@@ -59,7 +75,7 @@ const InvoicePage = () => {
             ) : null}
             {delivery ? (
               <DeliveryOption
-                openChoices={() => setShowDeliveryOptions(!showDeliveryOptions)}
+                // openChoices={() => setShowDeliveryOptions(!showDeliveryOptions)}
                 choice={deliveryChoices[delivery - 1]}
                 canRemove
               />
@@ -69,15 +85,20 @@ const InvoicePage = () => {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Address</Text>
+            <TouchableOpacity
+              onPress={() => setShowPickLocationModal(!showPickLocationModal)}>
+              <Text>change</Text>
+            </TouchableOpacity>
           </View>
           <View style={styles.sectionBody}>
             {!location ? (
               <TouchableOpacity
-                onPress={() => setShowDeliveryOptions(!showDeliveryOptions)}
+                onPress={() => setShowPickLocationModal(!showPickLocationModal)}
                 style={styles.deliveryBtn}>
                 <Text style={styles.btnText}>Pick Delivery Address</Text>
               </TouchableOpacity>
             ) : null}
+            {location ? <AddressCard address={location?.address} /> : null}
           </View>
         </View>
       </ScrollView>
@@ -113,6 +134,37 @@ const InvoicePage = () => {
         </View>
       </Modal>
       {/* end of Modal for selecting Delivery Option */}
+
+      {/* Modal for selection delivery location */}
+      <Modal
+        visible={showPickLocationModal}
+        transparent={true}
+        onDismiss={() => setShowPickLocationModal(!showPickLocationModal)}>
+        <View style={styles.modalShadow}>
+          <View style={styles.locationModal}>
+            <View style={styles.sectionHeader}>
+              <Text>Choose your drop-off location</Text>
+              <TouchableOpacity
+                onPress={() =>
+                  setShowPickLocationModal(!showPickLocationModal)
+                }>
+                <Text>Close</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={[styles.sectionBody, {flex: 1}]}>
+              <LocationView
+                apiKey={'AIzaSyAtsKSqZLKQeh4oZAk05n5zYwZ_GswtzHk'}
+                initialLocation={{
+                  latitude: 37.78825,
+                  longitude: -122.4324,
+                }}
+                onLocationSelect={handleLocationSelected}
+              />
+            </View>
+          </View>
+        </View>
+      </Modal>
+      {/* End of Modal for selecting Delivery location */}
     </View>
   );
 };
@@ -123,55 +175,88 @@ const DeliveryOption = ({chosen, choice, selected, canRemove, openChoices}) => {
   // console.log(choice)
   return (
     <TouchableOpacity onPress={selected} style={[styles.deliveryCard]}>
-      <View
-        style={{
-          flex: 3,
-          display: 'flex',
-          justifyContent: 'center',
-          // alignItems: 'center',
-          paddingHorizontal: 20,
-        }}>
-        <Text style={{fontSize: 22, fontWeight: 'bold'}}>
+      <View style={styles.deliveryOptionLabelHolder}>
+        <Text style={styles.label1}>
           {choice?.title} - {choice?.price}
         </Text>
-        <Text style={{fontSize: 16, fontWeight: 'bold'}}>
-          {choice?.description}
-        </Text>
+        <Text style={styles.label2}>{choice?.description}</Text>
       </View>
-      <View
-        style={{
-          flex: 1,
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        <TouchableOpacity
+      <View style={styles.iconBtnHolder}>
+        <View
           onPress={canRemove ? openChoices : () => {}}
-          style={{
-            height: 60,
-            width: 60,
-            backgroundColor: chosen ? colors.info : '#fff',
-            borderRadius: 30,
-            elevation: 2,
-            shadowOffset: 10,
-            shadowOpacity: 0.4,
-            shadowColor: '#000',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
+          style={[
+            styles.iconBtn,
+            // eslint-disable-next-line react-native/no-inline-styles
+            {backgroundColor: chosen ? colors.info : '#fff'},
+          ]}>
           <Feather
-            name={!canRemove ? 'check' : 'x'}
+            name={!canRemove ? 'check' : 'truck'}
             size={27}
             color={chosen ? colors.white : colors.info}
           />
-        </TouchableOpacity>
+        </View>
       </View>
     </TouchableOpacity>
   );
 };
 
+const AddressCard = ({address}) => {
+  return (
+    <View style={styles.addressCard}>
+      <View style={styles.addressCardRow}>
+        <Text>Address #1</Text>
+        <Feather name="home" size={27} color={colors.info} />
+      </View>
+      <View style={styles.addressCardRow}>
+        <Text style={styles.label2}>{address}</Text>
+      </View>
+    </View>
+  );
+};
+
 const styles = StyleSheet.create({
+  addressCardRow: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    margin: 10,
+  },
+  addressCard: {
+    width: '100%',
+    height: 120,
+    alignSelf: 'center',
+    borderColor: colors.info,
+    borderWidth: 2,
+    padding: 10,
+    borderRadius: 12,
+  },
+  iconBtn: {
+    height: 60,
+    width: 60,
+    borderRadius: 30,
+    elevation: 2,
+    // shadowOffset: 10,
+    shadowOpacity: 0.4,
+    shadowColor: '#000',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  iconBtnHolder: {
+    flex: 1,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  label1: {fontSize: 22, fontWeight: 'bold'},
+  label2: {fontSize: 16, fontWeight: 'bold'},
+  deliveryOptionLabelHolder: {
+    flex: 3,
+    display: 'flex',
+    justifyContent: 'center',
+    // alignItems: 'center',
+    paddingHorizontal: 20,
+  },
   full: {
     padding: 10,
   },
@@ -222,9 +307,18 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: colors.primaryBackground,
   },
+  locationModal: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    left: 0,
+    height,
+    width: '100%',
+    backgroundColor: colors.primaryBackground,
+  },
   deliveryCard: {
     height: 120,
-    width: '90%',
+    width: '100%',
     alignSelf: 'center',
     marginVertical: 10,
     borderColor: colors.info,
