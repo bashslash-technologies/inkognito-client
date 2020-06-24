@@ -28,6 +28,7 @@ import {AuthContext} from '../../navigation/appNavigator';
 
 const LoginComponent = ({navigation}) => {
   const [signInView] = useState(new Animated.Value(1));
+  const [showForgot, setShowForgot] = useState(false);
   const [forgotView] = useState(new Animated.Value(0));
   const [showView, setShowView] = useState(false);
   const [email, setEmail] = useState('');
@@ -133,6 +134,7 @@ const LoginComponent = ({navigation}) => {
   };
 
   const showForgotPasswordView = () => {
+    setShowForgot(true);
     Animated.parallel([
       Animated.spring(signInView, {
         toValue: 0,
@@ -150,6 +152,7 @@ const LoginComponent = ({navigation}) => {
   };
 
   const showSignInView = () => {
+    setShowForgot(false);
     Animated.parallel([
       Animated.spring(signInView, {
         toValue: 1,
@@ -213,204 +216,214 @@ const LoginComponent = ({navigation}) => {
             style={{
               width: '100%',
             }}>
-            <Animated.View
-              style={{
-                position: 'absolute',
-                top: 0,
-                width: '100%',
-                opacity: signInView,
-                transform: [
-                  {
-                    scale: signInView,
-                  },
-                ],
-              }}>
-              <Text
-                style={{
-                  fontSize: RFValue(40),
-                  textAlign: 'center',
-                  marginBottom: RFValue(50),
-                }}>
-                Sign in
-              </Text>
-              <View
-                style={{
-                  marginBottom: RFValue(Platform.OS === 'android' ? 30 : 20),
-                }}>
-                <TextInput
-                  placeholder={'Email here'}
-                  title={'Email Address'}
-                  icon={'mail'}
-                  returnKeyType={'next'}
-                  keyboardType="email-address"
-                  textContentType="emailAddress"
-                  autoCapitalize={'none'}
-                  value={email}
-                  onChangeText={e => setEmail(e)}
-                  style={{color: Colors.primaryColor}}
-                />
-              </View>
-              {Platform.OS === 'android' && showView && (
-                <View style={{height: RFValue(40)}} />
-              )}
-              <View style={{marginBottom: RFValue(30)}}>
-                <TextInput
-                  title={'Password'}
-                  returnKeyType={'done'}
-                  placeholder={'Password here'}
-                  secureTextEntry
-                  icon={'lock'}
-                  value={password}
-                  onChangeText={e => setPassword(e)}
-                />
-              </View>
-              <Button
-                style={{
-                  backgroundColor: Colors.primaryColor,
-                  borderRadius: 15,
-                }}
-                onPress={handleSubmit}>
-                <View
+            {showForgot === false && (
+              <Fragment>
+                <Animated.View
                   style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    paddingVertical: RFValue(10),
-                    justifyContent: 'center',
+                    position: 'absolute',
+                    top: 0,
+                    width: '100%',
+                    opacity: signInView,
+                    transform: [
+                      {
+                        scale: signInView,
+                      },
+                    ],
                   }}>
-                  {loading ? (
-                    <ActivityIndicator color={'#fff'} />
-                  ) : (
-                    <Text
-                      type={'semi-bold'}
-                      style={{
-                        color: Colors.white,
-                        fontSize: RFValue(15),
-                      }}>
-                      Sign in
-                    </Text>
-                  )}
-                </View>
-              </Button>
-              <TouchableOpacity
-                onPress={showForgotPasswordView}
-                style={{justifyContent: 'center', marginTop: RFValue(10)}}>
-                <Text style={{textAlign: 'center'}}>Forgot Password?</Text>
-              </TouchableOpacity>
-            </Animated.View>
-            <Animated.View
-              style={{
-                opacity: forgotView,
-                transform: [
-                  {
-                    scale: forgotView,
-                  },
-                ],
-              }}>
-              <Text
-                style={{
-                  fontSize: RFValue(30),
-                  textAlign: 'center',
-                  marginBottom: RFValue(10),
-                }}>
-                Forgot Password
-              </Text>
-              <Text
-                style={{
-                  fontSize: RFValue(13),
-                  textAlign: 'center',
-                  marginBottom: RFValue(50),
-                }}>
-                Enter your email and will sent you a 5 digit code to reset your
-                password
-              </Text>
-              <View
-                style={{
-                  marginBottom: RFValue(Platform.OS === 'android' ? 30 : 20),
-                }}>
-                <TextInput
-                  placeholder={'Email here'}
-                  title={'Email Address'}
-                  icon={'mail'}
-                  returnKeyType={'next'}
-                  keyboardType="email-address"
-                  textContentType="emailAddress"
-                  autoCapitalize={'none'}
-                  value={forgot}
-                  onChangeText={e => setForgot(e)}
-                  style={{color: Colors.primaryColor}}
-                />
-              </View>
-
-              <Button
-                disbled={loadForgot}
-                style={{
-                  backgroundColor: Colors.primaryColor,
-                  borderRadius: 15,
-                }}
-                onPress={sendForgot}>
-                <View
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    paddingVertical: RFValue(10),
-                    justifyContent: 'center',
-                  }}>
-                  {loading ? (
-                    <ActivityIndicator color={'#fff'} />
-                  ) : (
-                    <Text
-                      type={'semi-bold'}
-                      style={{
-                        color: Colors.white,
-                        fontSize: RFValue(15),
-                      }}>
-                      Send reset pin
-                    </Text>
-                  )}
-                </View>
-              </Button>
-
-              <Button
-                style={{
-                  backgroundColor: Colors.white,
-                  borderRadius: 15,
-                  marginTop: 10,
-                  borderWidth: 0.5,
-                  borderColor: Colors.primaryColor,
-                }}
-                onPress={showSignInView}>
-                <View
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    paddingVertical: RFValue(10),
-                    justifyContent: 'center',
-                  }}>
-                  <View
-                    style={{
-                      backgroundColor: Colors.primaryColor,
-                      borderRadius: 50,
-                      marginRight: 10,
-                    }}>
-                    <Feather
-                      name={'chevron-left'}
-                      color={Colors.white}
-                      size={20}
-                    />
-                  </View>
                   <Text
                     style={{
-                      color: Colors.primaryColor,
-                      fontSize: RFValue(15),
+                      fontSize: RFValue(40),
+                      textAlign: 'center',
+                      marginBottom: RFValue(50),
                     }}>
-                    Back to Sign In
+                    Sign in
                   </Text>
+                  <View
+                    style={{
+                      marginBottom: RFValue(
+                        Platform.OS === 'android' ? 30 : 20,
+                      ),
+                    }}>
+                    <TextInput
+                      placeholder={'Email here'}
+                      title={'Email Address'}
+                      icon={'mail'}
+                      returnKeyType={'next'}
+                      keyboardType="email-address"
+                      textContentType="emailAddress"
+                      autoCapitalize={'none'}
+                      value={email}
+                      onChangeText={e => setEmail(e)}
+                      style={{color: Colors.primaryColor}}
+                    />
+                  </View>
+                  {Platform.OS === 'android' && showView && (
+                    <View style={{height: RFValue(40)}} />
+                  )}
+                  <View style={{marginBottom: RFValue(30)}}>
+                    <TextInput
+                      title={'Password'}
+                      returnKeyType={'done'}
+                      placeholder={'Password here'}
+                      secureTextEntry
+                      icon={'lock'}
+                      value={password}
+                      onChangeText={e => setPassword(e)}
+                    />
+                  </View>
+                  <Button
+                    style={{
+                      backgroundColor: Colors.primaryColor,
+                      borderRadius: 15,
+                    }}
+                    onPress={handleSubmit}>
+                    <View
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        paddingVertical: RFValue(10),
+                        justifyContent: 'center',
+                      }}>
+                      {loading ? (
+                        <ActivityIndicator color={'#fff'} />
+                      ) : (
+                        <Text
+                          type={'semi-bold'}
+                          style={{
+                            color: Colors.white,
+                            fontSize: RFValue(15),
+                          }}>
+                          Sign in
+                        </Text>
+                      )}
+                    </View>
+                  </Button>
+                  <TouchableOpacity
+                    onPress={showForgotPasswordView}
+                    style={{justifyContent: 'center', marginTop: RFValue(10)}}>
+                    <Text style={{textAlign: 'center'}}>Forgot Password?</Text>
+                  </TouchableOpacity>
+                </Animated.View>
+              </Fragment>
+            )}
+            {showForgot && (
+              <Animated.View
+                style={
+                  {
+                    // opacity: forgotView,
+                    // transform: [
+                    //   {
+                    //     scale: forgotView,
+                    //   },
+                    // ],
+                  }
+                }>
+                <Text
+                  style={{
+                    fontSize: RFValue(30),
+                    textAlign: 'center',
+                    marginBottom: RFValue(10),
+                  }}>
+                  Forgot Password
+                </Text>
+                <Text
+                  style={{
+                    fontSize: RFValue(13),
+                    textAlign: 'center',
+                    marginBottom: RFValue(50),
+                  }}>
+                  Enter your email and will sent you a 5 digit code to reset
+                  your password
+                </Text>
+                <View
+                  style={{
+                    marginBottom: RFValue(Platform.OS === 'android' ? 30 : 20),
+                  }}>
+                  <TextInput
+                    placeholder={'Email here'}
+                    title={'Email Address'}
+                    icon={'mail'}
+                    returnKeyType={'next'}
+                    keyboardType="email-address"
+                    textContentType="emailAddress"
+                    autoCapitalize={'none'}
+                    value={forgot}
+                    onChangeText={e => setForgot(e)}
+                    style={{color: Colors.primaryColor}}
+                  />
                 </View>
-              </Button>
-            </Animated.View>
+
+                <Button
+                  disbled={loadForgot}
+                  style={{
+                    backgroundColor: Colors.primaryColor,
+                    borderRadius: 15,
+                  }}
+                  onPress={sendForgot}>
+                  <View
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      paddingVertical: RFValue(10),
+                      justifyContent: 'center',
+                    }}>
+                    {loading ? (
+                      <ActivityIndicator color={'#fff'} />
+                    ) : (
+                      <Text
+                        type={'semi-bold'}
+                        style={{
+                          color: Colors.white,
+                          fontSize: RFValue(15),
+                        }}>
+                        Send reset pin
+                      </Text>
+                    )}
+                  </View>
+                </Button>
+
+                <Button
+                  style={{
+                    backgroundColor: Colors.white,
+                    borderRadius: 15,
+                    marginTop: 10,
+                    borderWidth: 0.5,
+                    borderColor: Colors.primaryColor,
+                  }}
+                  onPress={showSignInView}>
+                  <View
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      paddingVertical: RFValue(10),
+                      justifyContent: 'center',
+                    }}>
+                    <View
+                      style={{
+                        backgroundColor: Colors.primaryColor,
+                        borderRadius: 50,
+                        marginRight: 10,
+                      }}>
+                      <Feather
+                        name={'chevron-left'}
+                        color={Colors.white}
+                        size={20}
+                      />
+                    </View>
+                    <Text
+                      style={{
+                        color: Colors.primaryColor,
+                        fontSize: RFValue(15),
+                      }}>
+                      Back to Sign In
+                    </Text>
+                  </View>
+                </Button>
+              </Animated.View>
+            )}
           </View>
         </StyledBottomContainer>
       </ImageBackground>
