@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {Fragment, useRef, useEffect, useState, useContext} from 'react';
 import {
   View,
@@ -20,7 +21,7 @@ import Button from '../../components/button';
 import TextInput from '../../components/textInput';
 import Feather from 'react-native-vector-icons/Feather';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import background from '../../assets/images/back2.jpg';
+// import background from '../../assets/images/back2.jpg';
 import {validate} from '../../services/utils';
 import {get, post} from '../../services/transport';
 import {showMessage} from 'react-native-flash-message';
@@ -87,15 +88,18 @@ const LoginComponent = ({navigation}) => {
   };
 
   const handleSubmit = async () => {
-    if (!validate(email.trim(), 'Email Address is invalid', 'email')) return;
+    if (!validate(email.trim(), 'Email Address is invalid', 'email')) {
+      return;
+    }
     if (
       !validate(
         password.trim(),
         'Password should be more than 6 characters',
         'password',
       )
-    )
+    ) {
       return;
+    }
     try {
       setLoading(true);
       let results = await post('/users/login', {
@@ -166,7 +170,7 @@ const LoginComponent = ({navigation}) => {
     ]).start();
   };
 
-  const passwordRef = useRef();
+  // const passwordRef = useRef();
   const {height} = useWindowDimensions();
   return (
     <Fragment>
@@ -216,6 +220,7 @@ const LoginComponent = ({navigation}) => {
             <Animated.View
               style={{
                 position: 'absolute',
+                // backgroundColor: 'red',
                 top: 0,
                 width: '100%',
                 opacity: signInView,
@@ -300,6 +305,7 @@ const LoginComponent = ({navigation}) => {
             </Animated.View>
             <Animated.View
               style={{
+                position: 'absolute',
                 opacity: forgotView,
                 transform: [
                   {

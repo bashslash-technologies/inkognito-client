@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {Fragment, useRef, useEffect, useState} from 'react';
 import {
   View,
@@ -74,6 +75,7 @@ const RegisterComponent = ({navigation}) => {
         role: 'USER',
       });
       results = results.data;
+      console.log(results);
 
       if (!results.success) {
         setLoading(false);

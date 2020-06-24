@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import {View, Dimensions, Image} from 'react-native';
 import {RFValue} from 'react-native-responsive-fontsize';
 import Text from '../../components/text';

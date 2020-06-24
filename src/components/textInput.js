@@ -1,5 +1,6 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {forwardRef, Fragment} from 'react';
-import {StyleSheet, TextInput, View, TouchableOpacity} from 'react-native';
+import {StyleSheet, TextInput, View} from 'react-native';
 import PropTypes from 'prop-types';
 import Feather from 'react-native-vector-icons/Feather';
 import Text from './text';
