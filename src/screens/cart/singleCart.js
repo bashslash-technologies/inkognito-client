@@ -57,7 +57,7 @@ const SingleCart = ({cartItem, showRemove}) => {
               justifyContent: 'space-between',
               alignItems: 'center',
             }}>
-            <Text>by {cartItem?.vendor.business_name}</Text>
+            <Text>by {cartItem?.vendor?.business_name}</Text>
             {!showRemove ? (
               <TouchableOpacity
                 onPress={() => removeItemFromCart(cartItem._id)}

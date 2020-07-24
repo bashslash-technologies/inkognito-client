@@ -66,6 +66,7 @@ const AppNavigator = props => {
         let data = await Store.getToken('@onBoard');
         setData(data);
         userToken = await Store.getToken('@user_token');
+        console.log('user token', JSON.parse(userToken).token);
       } catch (e) {
         console.warn(e.message);
       }

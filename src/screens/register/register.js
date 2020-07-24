@@ -67,36 +67,37 @@ const RegisterComponent = ({navigation}) => {
 
     try {
       setLoading(true);
-      let results = await post('/users/create', {
+      post('/users/register', {
         name: name.trim(),
         email: email.trim(),
-        contact: contact.trim().slice(-9),
+        phone: contact.trim().slice(-9),
         password: password.trim(),
-        role: 'USER',
-      });
-      results = results.data;
-      console.log(results);
+        role: 'CLIENT',
+      }).then(({data}) => {
+        const results = data;
+        console.log(results);
 
-      if (!results.success) {
-        setLoading(false);
-        showMessage({
-          message: 'Error',
-          description: results.message,
-          type: 'danger',
+        if (!results.success) {
+          setLoading(false);
+          showMessage({
+            message: 'Error',
+            description: results.message,
+            type: 'danger',
+          });
+          return;
+        }
+        navigation.push('verifyRegister', {
+          id: results.payload.user.id,
+          email: results.payload.user.email,
+          contact: `+${results.payload.user.contact}`,
         });
+        setLoading(false);
+        setName('');
+        setEmail('');
+        setContact('');
+        setPassword('');
         return;
-      }
-      navigation.push('verifyRegister', {
-        id: results.payload.user.id,
-        email: results.payload.user.email,
-        contact: `+${results.payload.user.contact}`,
       });
-      setLoading(false);
-      setName('');
-      setEmail('');
-      setContact('');
-      setPassword('');
-      return;
     } catch (e) {
       console.log(e);
       setLoading(false);

@@ -5,6 +5,7 @@ import {useNavigation} from '@react-navigation/native';
 const Stack = createStackNavigator();
 import CartComponent from '../screens/cart';
 import InvoiceComponent from '../screens/cart/invoicePage';
+import PaymentComponent from '../screens/cart/OrderPayment';
 import Colors from '../constants/colors';
 import Feather from 'react-native-vector-icons/Feather';
 import {RFValue} from 'react-native-responsive-fontsize';
@@ -47,6 +48,16 @@ const CartStack = props => {
           })}
           name="Invoice"
           component={InvoiceComponent}
+        />
+        <Stack.Screen
+          options={({}) => ({
+            title: 'Payment',
+            headerStyle: {backgroundColor: Colors.primaryColor},
+            headerTitleStyle: {color: Colors.white},
+            headerBackTitleStyle: {color: Colors.white},
+          })}
+          name="Payment"
+          component={PaymentComponent}
         />
       </Stack.Navigator>
     </Fragment>

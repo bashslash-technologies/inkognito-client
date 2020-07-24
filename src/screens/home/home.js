@@ -24,9 +24,9 @@ const HomeComponent = ({navigation}) => {
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     setLoading(true);
-    get('/products/all')
+    get('/products/')
       .then(res => {
-        console.log(res.data);
+        console.log(res.data.payload.products);
         if (!res.data.success) {
           return showMessage({
             message: 'Error',
@@ -34,7 +34,7 @@ const HomeComponent = ({navigation}) => {
             type: 'danger',
           });
         }
-        setData(res.data.payload);
+        setData(res.data.payload.products);
         setLoading(false);
       })
       .catch(e => {

@@ -5,7 +5,7 @@ import Auth from './index';
 
 axios.defaults.baseURL = `${BASE_URL}/api/v1`; //
 
-const config = {
+const Transportconfig = {
   headers: {},
 };
 
@@ -29,13 +29,14 @@ const successHandler = response => {
   return response;
 };
 
-const setToken = (config = {}) => {
-  let token = Auth.getToken('@user_token');
+const setToken = async (config = {}) => {
+  let token = await Auth.getToken('@user_token');
   if (token) {
-    config.headers['authorization'] = token;
+    // console.log('gggg', JSON.parse(token).token);
+    config.headers.authorization = `Bearer ${JSON.parse(token).token}`;
   }
   config.headers['Access-Control-Allow-Origin'] = '*';
-  config.headers['Accept'] = 'application/json';
+  config.headers.Accept = 'application/json';
   return config;
 };
 
@@ -52,7 +53,7 @@ axios.interceptors.request.use(
 export const post = (route, payload) =>
   new Promise(function(resolve, reject) {
     axios
-      .post(route, payload)
+      .post(route, payload, Transportconfig)
       .then(res => resolve(res))
       .catch(err => reject(err));
   });
@@ -68,7 +69,7 @@ export const patch = (route, payload) =>
 export const get = route =>
   new Promise((resolve, reject) => {
     axios
-      .get(route, config)
+      .get(route, Transportconfig)
       .then(res => resolve(res))
       .catch(err => reject(err));
   });

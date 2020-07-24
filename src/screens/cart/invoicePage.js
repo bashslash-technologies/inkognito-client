@@ -1,11 +1,14 @@
-import React, {useContext, useState} from 'react';
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, {useContext, useState, useEffect} from 'react';
 import {
   View,
-  Text,
+  ActivityIndicator,
   ScrollView,
   StyleSheet,
   Modal,
   TouchableOpacity,
+  Linking,
   Dimensions,
 } from 'react-native';
 import {CartContext} from '../../context/cart';
@@ -13,6 +16,11 @@ import SingleCart from './singleCart';
 import colors from '../../constants/colors';
 import Feather from 'react-native-vector-icons/Feather';
 import LocationView from 'react-native-location-view';
+import {post} from '../../services/transport';
+import Button from '../../components/button';
+import Colors from '../../constants/colors';
+import {RFValue} from 'react-native-responsive-fontsize';
+import Text from '../../components/text';
 
 const deliveryOptions = [
   {
@@ -44,10 +52,58 @@ const InvoicePage = () => {
   const [deliveryChoices] = useState(deliveryOptions);
   const [delivery, setDelivery] = useState(null);
   const [location, setLocation] = useState(null);
+  const [deliveryPrice, setDeliveryPrice] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleLocationSelected = location => {
-    console.log(location);
-    setLocation(location);
+  const getDeliveryPrice = loc => {
+    console.log(loc);
+    post('/orders/pricing', {
+      user_location: loc,
+      shop_ids: [...cart.map(el => el.shop_id)],
+    })
+      .then(res => {
+        console.log(res.data);
+
+        setDeliveryPrice(res.data.payload.prices);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  const createOrder = () => {
+    const {longitude, latitude} = location;
+    setLoading(true);
+    post('/orders/order', {
+      cart: [...cart.map(item => ({product: item._id, quantity: item.qty}))],
+      location: {
+        longitude,
+        latitude,
+      },
+      delivery_type: 'standard',
+    })
+      .then(res => {
+        console.log(res.data);
+        const url = res.data.payload.order.payment.authorization_url;
+        Linking.addEventListener(url, () => {});
+        Linking.openURL(url);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.log('err', err.response.data);
+        setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    if (location) {
+      getDeliveryPrice(location);
+    }
+  }, [location]);
+
+  const handleLocationSelected = loc => {
+    console.log(loc);
+    setLocation(loc);
     setShowPickLocationModal(!showPickLocationModal);
   };
 
@@ -57,31 +113,6 @@ const InvoicePage = () => {
         {cart.map((item, key) => (
           <SingleCart key={key} showRemove cartItem={item} />
         ))}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Delivery</Text>
-            <TouchableOpacity
-              onPress={() => setShowDeliveryOptions(!showDeliveryOptions)}>
-              <Text>change</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.sectionBody}>
-            {!delivery ? (
-              <TouchableOpacity
-                onPress={() => setShowDeliveryOptions(!showDeliveryOptions)}
-                style={styles.deliveryBtn}>
-                <Text style={styles.btnText}>Pick Delivery Option</Text>
-              </TouchableOpacity>
-            ) : null}
-            {delivery ? (
-              <DeliveryOption
-                // openChoices={() => setShowDeliveryOptions(!showDeliveryOptions)}
-                choice={deliveryChoices[delivery - 1]}
-                canRemove
-              />
-            ) : null}
-          </View>
-        </View>
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Address</Text>
@@ -101,6 +132,53 @@ const InvoicePage = () => {
             {location ? <AddressCard address={location?.address} /> : null}
           </View>
         </View>
+        {deliveryPrice ? (
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>Delivery</Text>
+              <TouchableOpacity
+                onPress={() => setShowDeliveryOptions(!showDeliveryOptions)}>
+                {/* <Text>change</Text> */}
+              </TouchableOpacity>
+            </View>
+            <View style={styles.sectionBody}>
+              <DeliveryOption
+                // openChoices={() => setShowDeliveryOptions(!showDeliveryOptions)}
+                choice={deliveryPrice}
+                canRemove
+              />
+            </View>
+          </View>
+        ) : null}
+        {deliveryPrice ?<Button
+          disabled={!deliveryPrice}
+          style={{
+            backgroundColor: Colors.primaryColor,
+            borderRadius: 15,
+          }}
+          onPress={createOrder}>
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              paddingVertical: RFValue(10),
+              justifyContent: 'center',
+            }}>
+            {loading ? (
+              <ActivityIndicator color={'#fff'} />
+            ) : (
+              <Text
+                type={'semi-bold'}
+                style={{
+                  color: Colors.white,
+                  fontSize: RFValue(15),
+                }}>
+                place order
+              </Text>
+            )}
+          </View>
+        </Button>: null}
       </ScrollView>
 
       {/* Modal for selecting Delivery option */}
@@ -173,13 +251,25 @@ export default InvoicePage;
 
 const DeliveryOption = ({chosen, choice, selected, canRemove, openChoices}) => {
   // console.log(choice)
+  const [selectedType, setSelectedType] = useState({});
+  useEffect(() => {
+    if (choice) {
+      Object.keys(choice).forEach(
+        key => choice[key] == null && delete choice[key],
+      );
+      console.log(choice);
+      setSelectedType(choice);
+    }
+  }, [choice]);
   return (
     <TouchableOpacity onPress={selected} style={[styles.deliveryCard]}>
       <View style={styles.deliveryOptionLabelHolder}>
         <Text style={styles.label1}>
-          {choice?.title} - {choice?.price}
+          {Object.keys(selectedType)[0]} - {Object.values(selectedType)[0]}
         </Text>
-        <Text style={styles.label2}>{choice?.description}</Text>
+        <Text style={styles.label2}>
+          delivery fee is calculated with distance
+        </Text>
       </View>
       <View style={styles.iconBtnHolder}>
         <View
@@ -259,6 +349,7 @@ const styles = StyleSheet.create({
   },
   full: {
     padding: 10,
+    marginBottom: 60,
   },
   section: {
     backgroundColor: colors.primaryBackground,
